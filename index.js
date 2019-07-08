@@ -1,10 +1,16 @@
-const app = require('express')();
-const http = require('http').createServer(app);
+const express = require('express');
+const app = express();
+const server = require('http').createServer(app);
+const io = require('socket.io').listen(server);
+const port = 3000;
 
-app.get('/', function(req, res){
-    res.send('<h1>Hello world</h1>');
+
+// setup socket.io connection with a log to show it is working
+io.on('connection', socket => {
+    console.log('user connected')
 });
 
-http.listen(3000, function(){
-  console.log('listening on *:3000');
-});
+// will show that the server is listnening on the given port.
+server.listen(port, () => 
+    console.log('listening on port ' + port)
+);
