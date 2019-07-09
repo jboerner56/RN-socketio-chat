@@ -7,18 +7,23 @@ export default class App extends React.Component {
     super(props);
     this.state = {
       chatMessage: '',
-      
+      chatMessages: [],
     };
   }
   // socket.io connection in componentDidMount so it connects on first page load
   componentDidMount() {
     this.socket = io('http://127.0.0.1:3000');
+    this.socket.on('chat message', msg => {
+      this.setState({ chatMessages: [...this.state.chatMessages, msg]
+      })
+    })
   };
   submitChatMessage() {
     this.socket.emit('chat message', this.state.chatMessage)
     this.setState({ chatMessage: '' });
   };
   render() {
+    const chatMessages = this.state.chatMessages.map(chatMessage => <Text key={chatMessage}>{chatMessage}</Text>)
     return (
       <View style={styles.container}>
         <TextInput 
@@ -39,6 +44,7 @@ export default class App extends React.Component {
                           // since the names are the same the second can be ommitted
           this.setState({ chatMessage });
         }}/>
+        {chatMessages}
       </View>
     );
   }
